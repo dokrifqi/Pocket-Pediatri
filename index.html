@@ -199,15 +199,6 @@ button:active{transform:scale(0.97);}
 .detail-content{flex:1;overflow-y:auto;padding:16px;}
 .detail-section{display:none;}
 .detail-section.active{display:block;}
-
-/* ══ FLOATING TAB BUTTON ══ */
-.fab-tabs{position:fixed;bottom:90px;right:16px;z-index:3000;display:none;}
-.fab-tabs.visible{display:block;}
-.fab-tabs-btn{width:50px;height:50px;border-radius:50%;background:var(--primary);color:white;border:none;font-size:20px;box-shadow:0 4px 16px rgba(2,136,209,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.fab-tabs-menu{position:absolute;bottom:58px;right:0;background:white;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.15);border:1px solid var(--border);padding:8px;width:180px;display:none;flex-direction:column;gap:2px;}
-.fab-tabs-menu.open{display:flex;}
-.fab-tab-item{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;border:none;background:transparent;text-align:left;font-family:var(--font-main);}
-.fab-tab-item:hover,.fab-tab-item.active{background:var(--primary-light);color:var(--primary);}
 .detail-card{background:var(--bg-card);border-radius:var(--radius-md);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);}
 .detail-card-title{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .detail-card-title::before{content:'';width:3px;height:14px;background:var(--primary);border-radius:2px;flex-shrink:0;}
@@ -616,23 +607,6 @@ button:active{transform:scale(0.97);}
   </div><!-- end disease-modal-inner -->
 </div><!-- end diseaseModal -->
 
-<!-- FAB: Tombol navigasi tab cepat -->
-<div class="fab-tabs" id="fabTabs">
-  <div class="fab-tabs-menu" id="fabTabMenu">
-    <button class="fab-tab-item" onclick="fabGoTab('d-definisi')">📖 Definisi</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-etiologi')">🔬 Etiologi</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-patofis')">⚙️ Patofisiologi</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-diagnosis')">🔍 Diagnosis</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-pemeriksaan')">🧪 Pemeriksaan</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-klasifikasi')">📊 Klasifikasi</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-tatalaksana')">💊 Tatalaksana</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-monitoring')">📈 Monitoring</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-komplikasi')">⚠️ Komplikasi</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-edukasi')">👨‍👩‍👧 Edukasi</button>
-    <button class="fab-tab-item" onclick="fabGoTab('d-prognosis')">🎯 Prognosis</button>
-  </div>
-  <button class="fab-tabs-btn" onclick="toggleFabMenu()" title="Navigasi Tab">☰</button>
-</div>
 
 <!-- ════════ ORGAN MODULE MODAL ════════ -->
 <div id="organModal" class="feature-modal">
@@ -824,7 +798,6 @@ async function openDisease(key) {
   if (!data) { showToast('❌','Gagal memuat data','var(--danger)'); return; }
   renderDiseaseModal(data);
   document.getElementById('diseaseModal').classList.add('open');
-  document.getElementById('fabTabs').classList.add('visible');
   switchDetailTab('d-definisi', null);
 }
 
@@ -892,8 +865,6 @@ function renderDiseaseModal(d) {
 
 function closeDiseaseModal() {
   document.getElementById('diseaseModal').classList.remove('open');
-  document.getElementById('fabTabs').classList.remove('visible');
-  document.getElementById('fabTabMenu').classList.remove('open');
 }
 
 function switchDetailTab(id, btn) {
@@ -910,22 +881,6 @@ function switchDetailTab(id, btn) {
   // Scroll ke atas di area content, bukan modal
   const scrollArea = document.getElementById('diseaseScrollArea');
   if(scrollArea) scrollArea.scrollTop = 0;
-  // Juga scroll tab yang aktif agar kelihatan
-  if(btn) btn.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
-  // Tutup FAB menu setelah pilih tab
-  document.getElementById('fabTabMenu').classList.remove('open');
-}
-
-function toggleFabMenu() {
-  document.getElementById('fabTabMenu').classList.toggle('open');
-}
-
-function fabGoTab(tabId) {
-  // Sync FAB active state
-  document.querySelectorAll('.fab-tab-item').forEach(b => b.classList.remove('active'));
-  const clicked = document.querySelector(`.fab-tab-item[onclick="fabGoTab('${tabId}')"]`);
-  if(clicked) clicked.classList.add('active');
-  switchDetailTab(tabId, null);
 }
 
 /* ══════════════════════════════════════
@@ -1072,120 +1027,6 @@ async function loadDiseaseIfNeeded(diseaseId) {
     showToast('❌', 'Gagal load data penyakit', 'var(--danger)');
     return false;
   }
-}
-
-function openDisease(diseaseId) {
-  const disease = DISEASE_DATABASE[diseaseId];
-  if (!disease) {
-    showToast('⚠️', 'Data penyakit tidak ditemukan. Coba refresh halaman.', 'var(--danger)');
-    return;
-  }
-  
-  let html = `
-    <div style="background:linear-gradient(135deg,#01579B,#0288D1);padding:20px;border-radius:16px 16px 0 0;color:white;">
-      <div style="font-size:48px;text-align:center;margin-bottom:10px;">${disease.icon || '🏥'}</div>
-      <h2 style="margin:0 0 5px 0;font-size:20px;">${disease.name}</h2>
-      <p style="margin:0;font-size:12px;opacity:0.9;">${disease.shortDesc || ''}</p>
-    </div>
-    <div style="padding:20px;overflow-y:auto;max-height:calc(100vh - 200px);">
-  `;
-  
-  if (disease.definisi) {
-    html += `
-      <div style="margin-bottom:20px;">
-        <h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">📋 Definisi</h3>
-        <p style="font-size:12px;line-height:1.6;margin:5px 0;"><strong>Pengertian:</strong> ${disease.definisi.pengertian}</p>
-        <p style="font-size:12px;line-height:1.6;margin:5px 0;"><strong>Epidemiologi:</strong> ${disease.definisi.epidemiologi}</p>
-      </div>
-    `;
-  }
-  
-  if (disease.diagnosisKlinis) {
-    html += `
-      <div style="margin-bottom:20px;">
-        <h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">🔍 Diagnosis Klinis</h3>
-        <div style="font-size:12px;"><strong>Anamnesis:</strong><ul style="padding-left:20px;margin:5px 0;">
-    `;
-    if (Array.isArray(disease.diagnosisKlinis.anamnesis)) {
-      disease.diagnosisKlinis.anamnesis.forEach(item => {
-        html += `<li style="margin:3px 0;">${item}</li>`;
-      });
-    }
-    html += `</ul><strong>Pemeriksaan Fisik:</strong><ul style="padding-left:20px;margin:5px 0;">`;
-    if (Array.isArray(disease.diagnosisKlinis.pemeriksaanFisik)) {
-      disease.diagnosisKlinis.pemeriksaanFisik.forEach(item => {
-        html += `<li style="margin:3px 0;">${item}</li>`;
-      });
-    }
-    html += `</ul></div></div>`;
-  }
-  
-  if (disease.tatalaksana && disease.tatalaksana.obatObatan) {
-    html += `
-      <div style="margin-bottom:20px;">
-        <h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">💊 Tatalaksana Farmakologis</h3>
-    `;
-    disease.tatalaksana.obatObatan.forEach(drug => {
-      html += `
-        <div style="background:#F0F5FA;padding:12px;border-radius:8px;margin-bottom:8px;font-size:12px;border-left:3px solid var(--primary);">
-          <strong style="color:var(--text-primary);">${drug.nama}</strong><br>
-          <span style="color:var(--text-secondary);">Dosis:</span> <code style="background:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">${drug.dosis || drug.dosisBerdasarkanUsia?.sekolah || 'Lihat detail'}</code><br>
-          <span style="color:var(--text-secondary);">Catatan:</span> <em>${drug.catatan || 'Lihat dokumentasi'}</em>
-        </div>
-      `;
-    });
-    html += `</div>`;
-  }
-  
-  if (disease.komplikasi && disease.komplikasi.komplikasiDini) {
-    html += `
-      <div style="margin-bottom:20px;">
-        <h3 style="font-size:14px;font-weight:700;color:var(--danger);margin-bottom:10px;">⚠️ Komplikasi</h3>
-        <ul style="padding-left:20px;font-size:12px;">
-    `;
-    const allComplications = [
-      ...(Array.isArray(disease.komplikasi.komplikasiDini) ? disease.komplikasi.komplikasiDini : []),
-      ...(Array.isArray(disease.komplikasi.komplikasiLanjut) ? disease.komplikasi.komplikasiLanjut : [])
-    ];
-    allComplications.forEach(k => {
-      html += `<li style="margin:3px 0;">${k}</li>`;
-    });
-    html += `</ul></div>`;
-  }
-  
-  if (disease.komplikasi && disease.komplikasi.redFlags) {
-    html += `
-      <div style="background:#FFEBEE;border-left:4px solid var(--danger);padding:12px;border-radius:8px;margin-top:20px;">
-        <h3 style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:8px;margin-top:0;">🚨 Red Flags — Segera Rujuk!</h3>
-        <ul style="padding-left:20px;font-size:12px;">
-    `;
-    if (Array.isArray(disease.komplikasi.redFlags)) {
-      disease.komplikasi.redFlags.forEach(rf => {
-        html += `<li style="margin:3px 0;color:var(--danger);"><strong>${rf}</strong></li>`;
-      });
-    }
-    html += `</ul></div>`;
-  }
-  
-  html += `</div>`;
-  
-  let modal = document.getElementById('diseaseDetailModal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'diseaseDetailModal';
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-      <div class="modal-content" style="max-width:600px;max-height:90vh;display:flex;flex-direction:column;border-radius:16px;overflow:hidden;">
-        <div style="flex:1;overflow-y:auto;"></div>
-        <button onclick="document.getElementById('diseaseDetailModal').classList.remove('open')" style="position:absolute;top:10px;right:10px;background:white;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">✕</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-  
-  modal.querySelector('div > div:first-child').innerHTML = html;
-  modal.classList.add('open');
-  modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
 }
 
 /* ══════════════════════════════════════
