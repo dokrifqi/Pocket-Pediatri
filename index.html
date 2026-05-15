@@ -177,27 +177,37 @@ button:active{transform:scale(0.97);}
 .empty-calc .ec-sub{font-size:12px;margin-top:6px;}
 
 /* ══ MODAL ══ */
-.feature-modal{position:fixed;inset:0;background:var(--bg-body);z-index:2000;display:none;flex-direction:column;overflow-y:auto;}
+.feature-modal{position:fixed;inset:0;background:var(--bg-body);z-index:2000;display:none;flex-direction:column;overflow:hidden;}
 .feature-modal.open{display:flex;}
-.modal-topbar{position:sticky;top:0;background:var(--bg-card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:10;box-shadow:var(--shadow-sm);}
+.modal-topbar{flex-shrink:0;background:var(--bg-card);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px;z-index:10;box-shadow:var(--shadow-sm);}
 .modal-back{width:36px;height:36px;border-radius:10px;background:var(--bg-body);border:none;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--primary);}
 .modal-title{font-size:15px;font-weight:800;color:var(--text-primary);}
 .modal-subtitle{font-size:11px;color:var(--text-muted);}
-.modal-body{flex:1;padding:0;}
+.modal-body{flex:1;padding:0;overflow-y:auto;}
 
 /* ══ DISEASE DETAIL MODAL ══ */
-.disease-detail-header{padding:24px 20px 20px;position:relative;overflow:hidden;}
+.disease-modal-inner{display:flex;flex-direction:column;height:100%;}
+.disease-detail-header{flex-shrink:0;padding:24px 20px 20px;position:relative;overflow:hidden;}
 .disease-detail-header::before{content:'';position:absolute;right:-20px;top:-20px;width:140px;height:140px;background:rgba(255,255,255,0.08);border-radius:50%;}
 .ddh-icon{font-size:36px;margin-bottom:10px;position:relative;z-index:1;}
 .ddh-title{font-size:20px;font-weight:800;color:white;position:relative;z-index:1;margin-bottom:4px;}
 .ddh-desc{font-size:12px;color:rgba(255,255,255,0.8);position:relative;z-index:1;}
-.detail-tabs{display:flex;overflow-x:auto;scrollbar-width:none;background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 8px;position:sticky;top:57px;z-index:9;}
+.detail-tabs{flex-shrink:0;display:flex;overflow-x:auto;scrollbar-width:none;background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 8px;}
 .detail-tabs::-webkit-scrollbar{display:none;}
 .detail-tab{padding:12px 14px;border:none;background:transparent;border-bottom:3px solid transparent;font-size:11px;font-weight:600;color:var(--text-muted);white-space:nowrap;font-family:var(--font-main);cursor:pointer;}
 .detail-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
-.detail-content{padding:16px;}
+.detail-content{flex:1;overflow-y:auto;padding:16px;}
 .detail-section{display:none;}
 .detail-section.active{display:block;}
+
+/* ══ FLOATING TAB BUTTON ══ */
+.fab-tabs{position:fixed;bottom:90px;right:16px;z-index:3000;display:none;}
+.fab-tabs.visible{display:block;}
+.fab-tabs-btn{width:50px;height:50px;border-radius:50%;background:var(--primary);color:white;border:none;font-size:20px;box-shadow:0 4px 16px rgba(2,136,209,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.fab-tabs-menu{position:absolute;bottom:58px;right:0;background:white;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.15);border:1px solid var(--border);padding:8px;width:180px;display:none;flex-direction:column;gap:2px;}
+.fab-tabs-menu.open{display:flex;}
+.fab-tab-item{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text-secondary);cursor:pointer;border:none;background:transparent;text-align:left;font-family:var(--font-main);}
+.fab-tab-item:hover,.fab-tab-item.active{background:var(--primary-light);color:var(--primary);}
 .detail-card{background:var(--bg-card);border-radius:var(--radius-md);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);}
 .detail-card-title{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
 .detail-card-title::before{content:'';width:3px;height:14px;background:var(--primary);border-radius:2px;flex-shrink:0;}
@@ -519,27 +529,29 @@ button:active{transform:scale(0.97);}
       <div class="modal-subtitle" id="dm-sub">—</div>
     </div>
   </div>
-  <!-- Detail Header -->
-  <div class="disease-detail-header" id="dm-header">
-    <div class="ddh-icon" id="dm-icon">🏥</div>
-    <div class="ddh-title" id="dm-name">—</div>
-    <div class="ddh-desc" id="dm-desc">—</div>
-  </div>
-  <!-- Detail Tabs -->
-  <div class="detail-tabs" id="detailTabs">
-    <button class="detail-tab active" onclick="switchDetailTab('d-definisi',this)">📖 Definisi</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-etiologi',this)">🔬 Etiologi</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-patofis',this)">⚙️ Patofisiologi</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-diagnosis',this)">🔍 Diagnosis</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-pemeriksaan',this)">🧪 Pemeriksaan</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-klasifikasi',this)">📊 Klasifikasi</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-tatalaksana',this)">💊 Tatalaksana</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-monitoring',this)">📈 Monitoring</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-komplikasi',this)">⚠️ Komplikasi</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-edukasi',this)">👨‍👩‍👧 Edukasi</button>
-    <button class="detail-tab" onclick="switchDetailTab('d-prognosis',this)">🎯 Prognosis</button>
-  </div>
-  <div class="detail-content">
+  <div class="disease-modal-inner">
+    <!-- Detail Header -->
+    <div class="disease-detail-header" id="dm-header">
+      <div class="ddh-icon" id="dm-icon">🏥</div>
+      <div class="ddh-title" id="dm-name">—</div>
+      <div class="ddh-desc" id="dm-desc">—</div>
+    </div>
+    <!-- Detail Tabs — selalu terlihat, tidak ikut scroll -->
+    <div class="detail-tabs" id="detailTabs">
+      <button class="detail-tab active" onclick="switchDetailTab('d-definisi',this)">📖 Definisi</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-etiologi',this)">🔬 Etiologi</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-patofis',this)">⚙️ Patofisiologi</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-diagnosis',this)">🔍 Diagnosis</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-pemeriksaan',this)">🧪 Pemeriksaan</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-klasifikasi',this)">📊 Klasifikasi</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-tatalaksana',this)">💊 Tatalaksana</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-monitoring',this)">📈 Monitoring</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-komplikasi',this)">⚠️ Komplikasi</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-edukasi',this)">👨‍👩‍👧 Edukasi</button>
+      <button class="detail-tab" onclick="switchDetailTab('d-prognosis',this)">🎯 Prognosis</button>
+    </div>
+    <!-- Scrollable content area -->
+    <div class="detail-content" id="diseaseScrollArea">
     <div id="d-definisi" class="detail-section active">
       <div class="detail-card"><div class="detail-card-title">Pengertian</div><p id="dd-pengertian" style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;"></p></div>
       <div class="detail-card"><div class="detail-card-title">Epidemiologi</div><p id="dd-epid" style="font-size:13.5px;color:var(--text-secondary);line-height:1.7;"></p></div>
@@ -598,7 +610,28 @@ button:active{transform:scale(0.97);}
       <div class="detail-card"><div class="detail-card-title">❌ Faktor Buruk</div><ul class="detail-list" id="dd-progburuk"></ul></div>
       <div class="detail-card"><div class="detail-card-title">Referensi</div><div id="dd-referensi"></div></div>
     </div>
+    <!-- Spacer agar konten tidak tertutup FAB -->
+    <div style="height:64px;"></div>
+  </div><!-- end detail-content -->
+  </div><!-- end disease-modal-inner -->
+</div><!-- end diseaseModal -->
+
+<!-- FAB: Tombol navigasi tab cepat -->
+<div class="fab-tabs" id="fabTabs">
+  <div class="fab-tabs-menu" id="fabTabMenu">
+    <button class="fab-tab-item" onclick="fabGoTab('d-definisi')">📖 Definisi</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-etiologi')">🔬 Etiologi</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-patofis')">⚙️ Patofisiologi</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-diagnosis')">🔍 Diagnosis</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-pemeriksaan')">🧪 Pemeriksaan</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-klasifikasi')">📊 Klasifikasi</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-tatalaksana')">💊 Tatalaksana</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-monitoring')">📈 Monitoring</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-komplikasi')">⚠️ Komplikasi</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-edukasi')">👨‍👩‍👧 Edukasi</button>
+    <button class="fab-tab-item" onclick="fabGoTab('d-prognosis')">🎯 Prognosis</button>
   </div>
+  <button class="fab-tabs-btn" onclick="toggleFabMenu()" title="Navigasi Tab">☰</button>
 </div>
 
 <!-- ════════ ORGAN MODULE MODAL ════════ -->
@@ -768,34 +801,30 @@ function openDiseaseFromHome(key) { closeOrganModal(); openDisease(key); }
 
 async function openDisease(key) {
   showToast('⏳','Memuat data...','var(--primary)');
-  // Normalize key: convert hyphen to underscore to match DISEASE_DATABASE keys
-  const normalizedKey = key.replace(/-/g, '_');
+  const normalizedKey = key.replace(/-/g,'_');
 
-  // Try cache first
+  // Coba dari cache
   let data = DISEASE_DATABASE[normalizedKey] || DISEASE_DATABASE[key];
 
-  // If not cached yet, fetch on-demand
+  // Kalau belum ada, fetch on-demand
   if (!data) {
-    const diseaseInfo = DISEASE_LIST.find(d =>
+    const info = DISEASE_LIST.find(d =>
       d.id === normalizedKey || d.id === key ||
-      d.file === key + '.json' || d.file === key.replace(/_/g,'-') + '.json'
+      d.file === key+'.json' || d.file === key.replace(/_/g,'-')+'.json'
     );
-    if (diseaseInfo) {
+    if (info) {
       try {
-        // Try root first, then Data/ subfolder
-        let response = await fetch(diseaseInfo.file).catch(() => null);
-        if (!response || !response.ok) response = await fetch('Data/' + diseaseInfo.file).catch(() => null);
-        if (response && response.ok) {
-          data = await response.json();
-          DISEASE_DATABASE[normalizedKey] = data;
-        }
-      } catch(e) { console.error('Fetch error:', e); }
+        let res = await fetch(info.file).catch(()=>null);
+        if (!res||!res.ok) res = await fetch('Data/'+info.file).catch(()=>null);
+        if (res&&res.ok) { data = await res.json(); DISEASE_DATABASE[normalizedKey]=data; }
+      } catch(e){ console.error(e); }
     }
   }
 
   if (!data) { showToast('❌','Gagal memuat data','var(--danger)'); return; }
   renderDiseaseModal(data);
   document.getElementById('diseaseModal').classList.add('open');
+  document.getElementById('fabTabs').classList.add('visible');
   switchDetailTab('d-definisi', null);
 }
 
@@ -861,7 +890,11 @@ function renderDiseaseModal(d) {
   setRef2('dd-referensi', d.referensi||[]);
 }
 
-function closeDiseaseModal() { document.getElementById('diseaseModal').classList.remove('open'); }
+function closeDiseaseModal() {
+  document.getElementById('diseaseModal').classList.remove('open');
+  document.getElementById('fabTabs').classList.remove('visible');
+  document.getElementById('fabTabMenu').classList.remove('open');
+}
 
 function switchDetailTab(id, btn) {
   document.querySelectorAll('.detail-section').forEach(s => s.classList.remove('active'));
@@ -874,7 +907,25 @@ function switchDetailTab(id, btn) {
       if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
     });
   }
-  document.getElementById('diseaseModal').scrollTop = 0;
+  // Scroll ke atas di area content, bukan modal
+  const scrollArea = document.getElementById('diseaseScrollArea');
+  if(scrollArea) scrollArea.scrollTop = 0;
+  // Juga scroll tab yang aktif agar kelihatan
+  if(btn) btn.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  // Tutup FAB menu setelah pilih tab
+  document.getElementById('fabTabMenu').classList.remove('open');
+}
+
+function toggleFabMenu() {
+  document.getElementById('fabTabMenu').classList.toggle('open');
+}
+
+function fabGoTab(tabId) {
+  // Sync FAB active state
+  document.querySelectorAll('.fab-tab-item').forEach(b => b.classList.remove('active'));
+  const clicked = document.querySelector(`.fab-tab-item[onclick="fabGoTab('${tabId}')"]`);
+  if(clicked) clicked.classList.add('active');
+  switchDetailTab(tabId, null);
 }
 
 /* ══════════════════════════════════════
@@ -944,22 +995,198 @@ function openQuickAction(key) {
 function closeQA(e) { if(e.target===document.getElementById('qaModal')) document.getElementById('qaModal').classList.remove('open'); }
 
 /* ══════════════════════════════════════
-   DATA LOADER — fetch JSON on demand
+   EXTERNAL DATA LOADER (Fetch JSON files)
 ══════════════════════════════════════ */
-let DISEASE_DATABASE = {};
+
+let DISEASE_DATABASE = {}; // Global variable untuk store data
 
 const DISEASE_LIST = [
-  { id: 'sepsis_neonatorum',    file: 'sepsis-neonatorum.json' },
-  { id: 'hiperbilirubinemia',   file: 'hiperbilirubinemia.json' },
-  { id: 'asma_anak',            file: 'asma-anak.json' },
-  { id: 'pneumonia_komunitas',  file: 'pneumonia-komunitas.json' },
-  { id: 'diare_akut',           file: 'diare-akut.json' },
-  { id: 'kejang_demam',         file: 'kejang-demam.json' },
-  { id: 'demam_berdarah_dengue',file: 'demam-berdarah-dengue.json' },
-  { id: 'demam_tifoid',         file: 'demam_tifoid.json' },
-  { id: 'tb_paru_anak',         file: 'tb-paru-anak.json' },
-  { id: 'sindrom_nefrotik',     file: 'sindrom-nefrotik.json' }
+  { id: 'demam_tifoid', file: 'demam_tifoid.json', label: 'Demam Tifoid Anak' },
+  { id: 'sepsis_neonatorum', file: 'sepsis-neonatorum.json', label: 'Sepsis Neonatorum' },
+  { id: 'pneumonia_komunitas', file: 'pneumonia-komunitas.json', label: 'Pneumonia Komunitas' },
+  { id: 'asma_anak', file: 'asma-anak.json', label: 'Asma Anak' },
+  { id: 'diare_akut', file: 'diare-akut.json', label: 'Diare Akut Anak' },
+  { id: 'kejang_demam', file: 'kejang-demam.json', label: 'Kejang Demam' },
+  { id: 'demam_berdarah', file: 'demam-berdarah-dengue.json', label: 'Demam Berdarah Dengue' },
+  { id: 'tb_paru', file: 'tb-paru-anak.json', label: 'Tuberkulosis Paru Anak' },
+  { id: 'hiperbilirubinemia', file: 'hiperbilirubinemia.json', label: 'Hiperbilirubinemia Neonatal' },
+  { id: 'sindrom_nefrotik', file: 'sindrom-nefrotik.json', label: 'Sindrom Nefrotik Anak' }
 ];
+
+// Load semua data JSON pada saat aplikasi start
+async function loadAllDiseaseData() {
+  const loadingToast = document.querySelector('[data-loading]');
+  showToast('📥', 'Loading data penyakit...', 'var(--primary)');
+  
+  try {
+    for (const disease of DISEASE_LIST) {
+      try {
+        const response = await fetch(disease.file);
+        if (!response.ok) {
+          console.warn(`⚠️  Failed to load ${disease.file}: ${response.status}`);
+          continue;
+        }
+        const data = await response.json();
+        DISEASE_DATABASE[disease.id] = data;
+        console.log(`✅ Loaded: ${disease.label}`);
+      } catch (error) {
+        console.warn(`⚠️  Error loading ${disease.file}:`, error.message);
+      }
+    }
+    
+    if (Object.keys(DISEASE_DATABASE).length > 0) {
+      showToast('✅', `Loaded ${Object.keys(DISEASE_DATABASE).length} penyakit`, 'var(--success)');
+      console.log('✅ Database ready:', DISEASE_DATABASE);
+    } else {
+      showToast('⚠️', 'Tidak ada data penyakit yang berhasil dimuat', 'var(--warning)');
+    }
+  } catch (error) {
+    console.error('❌ Error loading disease data:', error);
+    showToast('❌', 'Gagal loading data', 'var(--danger)');
+  }
+}
+
+// Load data saat user klik penyakit (jika belum di-load)
+async function loadDiseaseIfNeeded(diseaseId) {
+  if (DISEASE_DATABASE[diseaseId]) {
+    return true; // Sudah loaded
+  }
+  
+  const diseaseInfo = DISEASE_LIST.find(d => d.id === diseaseId);
+  if (!diseaseInfo) {
+    showToast('⚠️', 'Penyakit tidak ditemukan', 'var(--danger)');
+    return false;
+  }
+  
+  try {
+    const response = await fetch(diseaseInfo.file);
+    if (!response.ok) {
+      showToast('⚠️', `Gagal load data: ${response.status}`, 'var(--warning)');
+      return false;
+    }
+    const data = await response.json();
+    DISEASE_DATABASE[diseaseId] = data;
+    return true;
+  } catch (error) {
+    console.error('Error loading disease:', error);
+    showToast('❌', 'Gagal load data penyakit', 'var(--danger)');
+    return false;
+  }
+}
+
+function openDisease(diseaseId) {
+  const disease = DISEASE_DATABASE[diseaseId];
+  if (!disease) {
+    showToast('⚠️', 'Data penyakit tidak ditemukan. Coba refresh halaman.', 'var(--danger)');
+    return;
+  }
+  
+  let html = `
+    <div style="background:linear-gradient(135deg,#01579B,#0288D1);padding:20px;border-radius:16px 16px 0 0;color:white;">
+      <div style="font-size:48px;text-align:center;margin-bottom:10px;">${disease.icon || '🏥'}</div>
+      <h2 style="margin:0 0 5px 0;font-size:20px;">${disease.name}</h2>
+      <p style="margin:0;font-size:12px;opacity:0.9;">${disease.shortDesc || ''}</p>
+    </div>
+    <div style="padding:20px;overflow-y:auto;max-height:calc(100vh - 200px);">
+  `;
+  
+  if (disease.definisi) {
+    html += `
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">📋 Definisi</h3>
+        <p style="font-size:12px;line-height:1.6;margin:5px 0;"><strong>Pengertian:</strong> ${disease.definisi.pengertian}</p>
+        <p style="font-size:12px;line-height:1.6;margin:5px 0;"><strong>Epidemiologi:</strong> ${disease.definisi.epidemiologi}</p>
+      </div>
+    `;
+  }
+  
+  if (disease.diagnosisKlinis) {
+    html += `
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">🔍 Diagnosis Klinis</h3>
+        <div style="font-size:12px;"><strong>Anamnesis:</strong><ul style="padding-left:20px;margin:5px 0;">
+    `;
+    if (Array.isArray(disease.diagnosisKlinis.anamnesis)) {
+      disease.diagnosisKlinis.anamnesis.forEach(item => {
+        html += `<li style="margin:3px 0;">${item}</li>`;
+      });
+    }
+    html += `</ul><strong>Pemeriksaan Fisik:</strong><ul style="padding-left:20px;margin:5px 0;">`;
+    if (Array.isArray(disease.diagnosisKlinis.pemeriksaanFisik)) {
+      disease.diagnosisKlinis.pemeriksaanFisik.forEach(item => {
+        html += `<li style="margin:3px 0;">${item}</li>`;
+      });
+    }
+    html += `</ul></div></div>`;
+  }
+  
+  if (disease.tatalaksana && disease.tatalaksana.obatObatan) {
+    html += `
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--primary);margin-bottom:10px;">💊 Tatalaksana Farmakologis</h3>
+    `;
+    disease.tatalaksana.obatObatan.forEach(drug => {
+      html += `
+        <div style="background:#F0F5FA;padding:12px;border-radius:8px;margin-bottom:8px;font-size:12px;border-left:3px solid var(--primary);">
+          <strong style="color:var(--text-primary);">${drug.nama}</strong><br>
+          <span style="color:var(--text-secondary);">Dosis:</span> <code style="background:#fff;padding:2px 4px;border-radius:3px;font-size:11px;">${drug.dosis || drug.dosisBerdasarkanUsia?.sekolah || 'Lihat detail'}</code><br>
+          <span style="color:var(--text-secondary);">Catatan:</span> <em>${drug.catatan || 'Lihat dokumentasi'}</em>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+  
+  if (disease.komplikasi && disease.komplikasi.komplikasiDini) {
+    html += `
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--danger);margin-bottom:10px;">⚠️ Komplikasi</h3>
+        <ul style="padding-left:20px;font-size:12px;">
+    `;
+    const allComplications = [
+      ...(Array.isArray(disease.komplikasi.komplikasiDini) ? disease.komplikasi.komplikasiDini : []),
+      ...(Array.isArray(disease.komplikasi.komplikasiLanjut) ? disease.komplikasi.komplikasiLanjut : [])
+    ];
+    allComplications.forEach(k => {
+      html += `<li style="margin:3px 0;">${k}</li>`;
+    });
+    html += `</ul></div>`;
+  }
+  
+  if (disease.komplikasi && disease.komplikasi.redFlags) {
+    html += `
+      <div style="background:#FFEBEE;border-left:4px solid var(--danger);padding:12px;border-radius:8px;margin-top:20px;">
+        <h3 style="font-size:13px;font-weight:700;color:var(--danger);margin-bottom:8px;margin-top:0;">🚨 Red Flags — Segera Rujuk!</h3>
+        <ul style="padding-left:20px;font-size:12px;">
+    `;
+    if (Array.isArray(disease.komplikasi.redFlags)) {
+      disease.komplikasi.redFlags.forEach(rf => {
+        html += `<li style="margin:3px 0;color:var(--danger);"><strong>${rf}</strong></li>`;
+      });
+    }
+    html += `</ul></div>`;
+  }
+  
+  html += `</div>`;
+  
+  let modal = document.getElementById('diseaseDetailModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'diseaseDetailModal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width:600px;max-height:90vh;display:flex;flex-direction:column;border-radius:16px;overflow:hidden;">
+        <div style="flex:1;overflow-y:auto;"></div>
+        <button onclick="document.getElementById('diseaseDetailModal').classList.remove('open')" style="position:absolute;top:10px;right:10px;background:white;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">✕</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  
+  modal.querySelector('div > div:first-child').innerHTML = html;
+  modal.classList.add('open');
+  modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
+}
 
 /* ══════════════════════════════════════
    KALKULATOR DOSIS
@@ -1017,6 +1244,9 @@ function calcDoses() {
 ══════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   showToast('👋','Selamat datang di Pediatri App!','var(--primary)');
+  
+  // Load semua data penyakit dari external JSON files
+  loadAllDiseaseData();
 });
 </script>
 
